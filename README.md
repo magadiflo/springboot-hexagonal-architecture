@@ -126,7 +126,7 @@ CONTAINER ID   IMAGE                  COMMAND                  CREATED         S
 
 ---
 
-## DOMAIN
+# DOMAIN
 
 ---
 
@@ -155,3 +155,151 @@ public class Order {
     private BigDecimal total;
 }
 ````
+
+---
+
+# INFRASTRUCTURE
+
+---
+
+## Output
+
+Crearemos tanto el `port` como el `adapter` para la salida, en este caso, la salida será hacia el almacenamiento en la
+base de datos.
+
+### Port
+
+En este caso crearemos una interfaz genérica, aunque podríamos haber creado una interfaz (puerto) por cada adaptador que
+vayamos a crear.
+
+````java
+public interface EntityRepository<T, ID> {
+    Iterable<T> findAll();
+
+    Optional<T> findById(ID primaryKey);
+
+    T save(T t);
+
+    void deleteById(ID primaryKey);
+}
+````
+
+### Adapter
+
+La interfaz (puerto) creado anteriormente necesita su adaptador. En este apartado crearemos dos adaptadores, uno para el
+modelo de dominio `Customer` y otro para el `Order`:
+
+````java
+
+@RequiredArgsConstructor
+@Repository
+public class CustomerRepository implements EntityRepository<Customer, String> {
+
+    private final JdbcClient jdbcClient;
+
+    @Override
+    public Iterable<Customer> findAll() {
+        return this.jdbcClient.sql("SELECT id, name, country FROM customers" )
+                .query(Customer.class)
+                .list();
+    }
+
+    @Override
+    public Optional<Customer> findById(String primaryKey) {
+        return this.jdbcClient.sql("""
+                        SELECT c.id, c.name, c.country
+                        FROM customers AS c
+                        WHERE c.id = :id
+                        """)
+                .param("id", primaryKey)
+                .query(Customer.class)
+                .optional();
+    }
+
+    @Override
+    public Customer save(Customer customer) {
+        this.jdbcClient.sql("""
+                        INSERT INTO customers(id, name, country)
+                        VALUES(:id, :name, :country)
+                        """)
+                .param("id", customer.getId(), Types.VARCHAR)
+                .param("name", customer.getName(), Types.VARCHAR)
+                .param("country", customer.getCountry(), Types.VARCHAR)
+                .update();
+        return customer;
+    }
+
+    @Override
+    public void deleteById(String primaryKey) {
+        this.jdbcClient.sql("DELETE FROM customers WHERE id = :id" )
+                .param("id", primaryKey)
+                .update();
+    }
+}
+````
+
+````java
+
+@RequiredArgsConstructor
+@Repository
+public class OrderRepository implements EntityRepository<Order, String> {
+
+    private final JdbcClient jdbcClient;
+
+    @Override
+    public Iterable<Order> findAll() {
+        return this.jdbcClient.sql("SELECT id, customer_id, total FROM orders" )
+                .query(new OrderRowMapper())
+                .list();
+    }
+
+    @Override
+    public Optional<Order> findById(String primaryKey) {
+        return this.jdbcClient.sql("""
+                        SELECT o.id, o.customer_id, o.total
+                        FROM orders AS o
+                        WHERE o.id = :id
+                        """)
+                .param("id", primaryKey)
+                .query(new OrderRowMapper())
+                .optional();
+    }
+
+    @Override
+    public Order save(Order order) {
+        this.jdbcClient.sql("""
+                        INSERT INTO orders(id, customer_id, total)
+                        VALUES(:id, :customerId, :total)
+                        """)
+                .param("id", order.getId())
+                .param("customerId", order.getCustomerId())
+                .param("total", order.getTotal())
+                .update();
+        return order;
+    }
+
+    @Override
+    public void deleteById(String primaryKey) {
+        this.jdbcClient.sql("DELETE FROM orders WHERE id = :id" )
+                .param("id", primaryKey)
+                .update();
+    }
+
+    private static class OrderRowMapper implements RowMapper<Order> {
+
+        @Override
+        public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return Order.builder()
+                    .id(rs.getString("id" ))
+                    .customerId(rs.getString("customer_id" ))
+                    .total(rs.getBigDecimal("total" ))
+                    .build();
+        }
+    }
+}
+````
+
+**NOTA**
+
+> En el tutorial original se crea un único adaptador, de manera genérica, pero en mi caso crearé un adaptador para
+> cada modelo de dominio.
