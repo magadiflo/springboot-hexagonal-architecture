@@ -303,3 +303,81 @@ public class OrderRepository implements EntityRepository<Order, String> {
 
 > En el tutorial original se crea un único adaptador, de manera genérica, pero en mi caso crearé un adaptador para
 > cada modelo de dominio.
+
+## Input
+
+En este nuevo apartado crearemos dentro del `input` los `ports` y `adapters`:
+
+### Ports
+
+````java
+public interface OrderInputPort {
+    Order createOrder(String customerId, BigDecimal total);
+}
+````
+
+````java
+public interface CustomerInputPort {
+    List<Customer> getAllCustomers();
+
+    Customer getCustomerById(String customerId);
+
+    Customer createCustomer(String name, String country);
+
+    void deleteCustomerById(String customerId);
+}
+````
+
+### Adapters
+
+````java
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(path = "/api/v1/orders" )
+public class OrderAPI {
+
+    private final OrderInputPort orderInputPort;
+
+    @PostMapping
+    public ResponseEntity<Order> createOrder(@RequestParam String customerId, @RequestParam BigDecimal total) {
+        Order orderDB = this.orderInputPort.createOrder(customerId, total);
+        URI uri = URI.create("/api/v1/orders/" + orderDB.getId());
+        return ResponseEntity.created(uri).body(orderDB);
+    }
+}
+````
+
+````java
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping(path = "/api/v1/customers" )
+public class CustomerAPI {
+
+    private final CustomerInputPort customerInputPort;
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> findAllCustomers() {
+        return ResponseEntity.ok(this.customerInputPort.getAllCustomers());
+    }
+
+    @GetMapping(path = "/{customerId}" )
+    public ResponseEntity<Customer> getCustomer(@PathVariable String customerId) {
+        return ResponseEntity.ok(this.customerInputPort.getCustomerById(customerId));
+    }
+
+    @PostMapping
+    public ResponseEntity<Customer> saveCustomer(@RequestParam String name, @RequestParam String country) {
+        Customer customerDB = this.customerInputPort.createCustomer(name, country);
+        URI uri = URI.create("/api/v1/customers/" + customerDB.getId());
+        return ResponseEntity.created(uri).body(customerDB);
+    }
+
+    @DeleteMapping(path = "/{customerId}" )
+    public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId) {
+        this.customerInputPort.deleteCustomerById(customerId);
+        return ResponseEntity.noContent().build();
+    }
+}
+````
