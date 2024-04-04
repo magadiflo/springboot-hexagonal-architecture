@@ -1,3 +1,22 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
 spring:
   application:
     name: springboot-hexagonal-architecture
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_hexagonal_architecture
+    username: postgres
+    password: magadiflo
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org.springframework.test.context.jdbc: DEBUG
+    org.springframework.jdbc.datasource.init: DEBUG
