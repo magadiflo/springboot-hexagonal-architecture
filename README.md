@@ -124,3 +124,34 @@ CONTAINER ID   IMAGE                  COMMAND                  CREATED         S
 6c624a898553   postgres:15.2-alpine   "docker-entrypoint.s…"   7 seconds ago   Up 5 seconds   0.0.0.0:5432->5432/tcp   postgres
 ````
 
+---
+
+## DOMAIN
+
+---
+
+Para este ejemplo crearemos dos entidades de dominio `Customer` y `Order`:
+
+````java
+
+@Getter
+@Setter
+@Builder
+public class Customer {
+    private String id;
+    private String name;
+    private String country;
+}
+````
+
+````java
+
+@Getter
+@Setter
+@Builder
+public class Order {
+    private String id;
+    private String customerId;
+    private BigDecimal total;
+}
+````
