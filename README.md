@@ -158,6 +158,70 @@ public class Order {
 
 ---
 
+# APPLICATION
+
+---
+
+En esta capa implementaremos los casos de uso del negocio, básicamente los relacionados al `customer` y al `order`:
+
+````java
+
+@RequiredArgsConstructor
+@Service
+public class CustomerUserCase implements CustomerInputPort {
+
+    private final EntityRepository<Customer, String> customerRepository;
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return (List<Customer>) this.customerRepository.findAll();
+    }
+
+    @Override
+    public Customer getCustomerById(String customerId) {
+        return this.customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer no encontrado" ));
+    }
+
+    @Override
+    public Customer createCustomer(String name, String country) {
+        Customer customer = Customer.builder()
+                .id(UUID.randomUUID().toString())
+                .name(name)
+                .country(country)
+                .build();
+        return this.customerRepository.save(customer);
+    }
+
+    @Override
+    public void deleteCustomerById(String customerId) {
+        this.customerRepository.deleteById(customerId);
+    }
+}
+````
+
+````java
+
+@RequiredArgsConstructor
+@Service
+public class OrderUseCase implements OrderInputPort {
+
+    private final EntityRepository<Order, String> orderRepository;
+
+    @Override
+    public Order createOrder(String customerId, BigDecimal total) {
+        Order order = Order.builder()
+                .id(UUID.randomUUID().toString())
+                .customerId(customerId)
+                .total(total)
+                .build();
+        return this.orderRepository.save(order);
+    }
+}
+````
+
+---
+
 # INFRASTRUCTURE
 
 ---
