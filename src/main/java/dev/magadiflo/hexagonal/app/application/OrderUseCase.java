@@ -1,8 +1,8 @@
 package dev.magadiflo.hexagonal.app.application;
 
-import dev.magadiflo.hexagonal.app.domain.Order;
-import dev.magadiflo.hexagonal.app.infrastructure.input.port.OrderInputPort;
-import dev.magadiflo.hexagonal.app.infrastructure.output.port.EntityRepository;
+import dev.magadiflo.hexagonal.app.domain.model.Order;
+import dev.magadiflo.hexagonal.app.domain.service.OrderInputPort;
+import dev.magadiflo.hexagonal.app.domain.repository.EntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
 package dev.magadiflo.hexagonal.app.application;
 
-import dev.magadiflo.hexagonal.app.domain.Customer;
-import dev.magadiflo.hexagonal.app.infrastructure.input.port.CustomerInputPort;
-import dev.magadiflo.hexagonal.app.infrastructure.output.port.EntityRepository;
+import dev.magadiflo.hexagonal.app.domain.model.Customer;
+import dev.magadiflo.hexagonal.app.domain.service.CustomerInputPort;
+import dev.magadiflo.hexagonal.app.domain.repository.EntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

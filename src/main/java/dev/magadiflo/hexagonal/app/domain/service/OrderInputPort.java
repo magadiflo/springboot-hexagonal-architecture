@@ -1,6 +1,6 @@
-package dev.magadiflo.hexagonal.app.infrastructure.input.port;
+package dev.magadiflo.hexagonal.app.domain.service;
 
-import dev.magadiflo.hexagonal.app.domain.Order;
+import dev.magadiflo.hexagonal.app.domain.model.Order;
 
 import java.math.BigDecimal;
 

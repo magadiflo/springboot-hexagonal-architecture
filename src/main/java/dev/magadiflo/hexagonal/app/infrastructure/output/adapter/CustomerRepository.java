@@ -1,7 +1,7 @@
 package dev.magadiflo.hexagonal.app.infrastructure.output.adapter;
 
-import dev.magadiflo.hexagonal.app.domain.Customer;
-import dev.magadiflo.hexagonal.app.infrastructure.output.port.EntityRepository;
+import dev.magadiflo.hexagonal.app.domain.model.Customer;
+import dev.magadiflo.hexagonal.app.domain.repository.EntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;

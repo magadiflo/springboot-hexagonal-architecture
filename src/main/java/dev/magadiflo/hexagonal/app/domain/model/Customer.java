@@ -1,4 +1,4 @@
-package dev.magadiflo.hexagonal.app.domain;
+package dev.magadiflo.hexagonal.app.domain.model;
 
 import lombok.Builder;
 import lombok.Getter;

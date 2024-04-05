@@ -156,6 +156,38 @@ public class Order {
 }
 ````
 
+Ahora crearemos algunas interfaces que nos ayudarán con la implementación de esta arquitectura:
+
+````java
+public interface EntityRepository<T, ID> {
+    Iterable<T> findAll();
+
+    Optional<T> findById(ID primaryKey);
+
+    T save(T t);
+
+    void deleteById(ID primaryKey);
+}
+````
+
+````java
+public interface OrderInputPort {
+    Order createOrder(String customerId, BigDecimal total);
+}
+````
+
+````java
+public interface CustomerInputPort {
+    List<Customer> getAllCustomers();
+
+    Customer getCustomerById(String customerId);
+
+    Customer createCustomer(String name, String country);
+
+    void deleteCustomerById(String customerId);
+}
+````
+
 ---
 
 # APPLICATION
@@ -226,29 +258,7 @@ public class OrderUseCase implements OrderInputPort {
 
 ---
 
-## Output
-
-Crearemos tanto el `port` como el `adapter` para la salida, en este caso, la salida será hacia el almacenamiento en la
-base de datos.
-
-### Port
-
-En este caso crearemos una interfaz genérica, aunque podríamos haber creado una interfaz (puerto) por cada adaptador que
-vayamos a crear.
-
-````java
-public interface EntityRepository<T, ID> {
-    Iterable<T> findAll();
-
-    Optional<T> findById(ID primaryKey);
-
-    T save(T t);
-
-    void deleteById(ID primaryKey);
-}
-````
-
-### Adapter
+## Output - Adapter
 
 La interfaz (puerto) creado anteriormente necesita su adaptador. En este apartado crearemos dos adaptadores, uno para el
 modelo de dominio `Customer` y otro para el `Order`:
@@ -368,31 +378,7 @@ public class OrderRepository implements EntityRepository<Order, String> {
 > En el tutorial original se crea un único adaptador, de manera genérica, pero en mi caso crearé un adaptador para
 > cada modelo de dominio.
 
-## Input
-
-En este nuevo apartado crearemos dentro del `input` los `ports` y `adapters`:
-
-### Ports
-
-````java
-public interface OrderInputPort {
-    Order createOrder(String customerId, BigDecimal total);
-}
-````
-
-````java
-public interface CustomerInputPort {
-    List<Customer> getAllCustomers();
-
-    Customer getCustomerById(String customerId);
-
-    Customer createCustomer(String name, String country);
-
-    void deleteCustomerById(String customerId);
-}
-````
-
-### Adapters
+## Input - Adapter
 
 ````java
 

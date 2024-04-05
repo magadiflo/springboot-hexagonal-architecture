@@ -1,7 +1,7 @@
 package dev.magadiflo.hexagonal.app.infrastructure.input.adapter;
 
-import dev.magadiflo.hexagonal.app.domain.Customer;
-import dev.magadiflo.hexagonal.app.infrastructure.input.port.CustomerInputPort;
+import dev.magadiflo.hexagonal.app.domain.model.Customer;
+import dev.magadiflo.hexagonal.app.domain.service.CustomerInputPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

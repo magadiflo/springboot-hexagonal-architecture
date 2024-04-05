@@ -1,4 +1,4 @@
-package dev.magadiflo.hexagonal.app.infrastructure.output.port;
+package dev.magadiflo.hexagonal.app.domain.repository;
 
 import java.util.Optional;
 

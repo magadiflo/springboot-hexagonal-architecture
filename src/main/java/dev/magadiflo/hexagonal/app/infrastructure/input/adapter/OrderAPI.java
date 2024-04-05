@@ -1,7 +1,7 @@
 package dev.magadiflo.hexagonal.app.infrastructure.input.adapter;
 
-import dev.magadiflo.hexagonal.app.domain.Order;
-import dev.magadiflo.hexagonal.app.infrastructure.input.port.OrderInputPort;
+import dev.magadiflo.hexagonal.app.domain.model.Order;
+import dev.magadiflo.hexagonal.app.domain.service.OrderInputPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
