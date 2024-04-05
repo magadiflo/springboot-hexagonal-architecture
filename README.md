@@ -4,10 +4,6 @@ Tutorial tomado del canal de **youtube NullSafe Architect**
 
 ---
 
-## Visión General de la Arquitectura Hexagonal
-
-![01.overview.png](./assets/01.overview.png)
-
 ## Dependencias
 
 ````xml
@@ -212,7 +208,7 @@ public class CustomerUserCase implements CustomerInputPort {
     @Override
     public Customer getCustomerById(String customerId) {
         return this.customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer no encontrado" ));
+                .orElseThrow(() -> new RuntimeException("Customer no encontrado"));
     }
 
     @Override
@@ -273,7 +269,7 @@ public class CustomerRepository implements EntityRepository<Customer, String> {
 
     @Override
     public Iterable<Customer> findAll() {
-        return this.jdbcClient.sql("SELECT id, name, country FROM customers" )
+        return this.jdbcClient.sql("SELECT id, name, country FROM customers")
                 .query(Customer.class)
                 .list();
     }
@@ -305,7 +301,7 @@ public class CustomerRepository implements EntityRepository<Customer, String> {
 
     @Override
     public void deleteById(String primaryKey) {
-        this.jdbcClient.sql("DELETE FROM customers WHERE id = :id" )
+        this.jdbcClient.sql("DELETE FROM customers WHERE id = :id")
                 .param("id", primaryKey)
                 .update();
     }
@@ -322,7 +318,7 @@ public class OrderRepository implements EntityRepository<Order, String> {
 
     @Override
     public Iterable<Order> findAll() {
-        return this.jdbcClient.sql("SELECT id, customer_id, total FROM orders" )
+        return this.jdbcClient.sql("SELECT id, customer_id, total FROM orders")
                 .query(new OrderRowMapper())
                 .list();
     }
@@ -354,7 +350,7 @@ public class OrderRepository implements EntityRepository<Order, String> {
 
     @Override
     public void deleteById(String primaryKey) {
-        this.jdbcClient.sql("DELETE FROM orders WHERE id = :id" )
+        this.jdbcClient.sql("DELETE FROM orders WHERE id = :id")
                 .param("id", primaryKey)
                 .update();
     }
@@ -364,9 +360,9 @@ public class OrderRepository implements EntityRepository<Order, String> {
         @Override
         public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
             return Order.builder()
-                    .id(rs.getString("id" ))
-                    .customerId(rs.getString("customer_id" ))
-                    .total(rs.getBigDecimal("total" ))
+                    .id(rs.getString("id"))
+                    .customerId(rs.getString("customer_id"))
+                    .total(rs.getBigDecimal("total"))
                     .build();
         }
     }
@@ -384,7 +380,7 @@ public class OrderRepository implements EntityRepository<Order, String> {
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/v1/orders" )
+@RequestMapping(path = "/api/v1/orders")
 public class OrderAPI {
 
     private final OrderInputPort orderInputPort;
@@ -402,7 +398,7 @@ public class OrderAPI {
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/v1/customers" )
+@RequestMapping(path = "/api/v1/customers")
 public class CustomerAPI {
 
     private final CustomerInputPort customerInputPort;
@@ -412,7 +408,7 @@ public class CustomerAPI {
         return ResponseEntity.ok(this.customerInputPort.getAllCustomers());
     }
 
-    @GetMapping(path = "/{customerId}" )
+    @GetMapping(path = "/{customerId}")
     public ResponseEntity<Customer> getCustomer(@PathVariable String customerId) {
         return ResponseEntity.ok(this.customerInputPort.getCustomerById(customerId));
     }
@@ -424,7 +420,7 @@ public class CustomerAPI {
         return ResponseEntity.created(uri).body(customerDB);
     }
 
-    @DeleteMapping(path = "/{customerId}" )
+    @DeleteMapping(path = "/{customerId}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId) {
         this.customerInputPort.deleteCustomerById(customerId);
         return ResponseEntity.noContent().build();
