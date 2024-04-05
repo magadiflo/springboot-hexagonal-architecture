@@ -431,3 +431,81 @@ public class CustomerAPI {
     }
 }
 ````
+
+## Ejecutando aplicación
+
+````bash
+$ curl -v http://localhost:8080/api/v1/customers | jq
+
+>
+< HTTP/1.1 200
+<
+[
+  {
+    "id": "354f9c97-7018-469f-bca0-8590e24150a5",
+    "name": "Martín",
+    "country": "Perú"
+  },
+  {
+    "id": "8491984c-c191-437b-85cc-3203f12768bd",
+    "name": "Pedrito",
+    "country": "Argentina"
+  },
+  {
+    "id": "da880956-e551-4817-ac22-fddb67b4e65b",
+    "name": "Batistuta",
+    "country": "Chile"
+  },
+  {
+    "id": "7b66e9b7-0693-40aa-9fa9-fcaa17e9efd5",
+    "name": "Ronaldinho",
+    "country": "Brasil"
+  }
+]
+````
+
+````bash
+$ curl -v http://localhost:8080/api/v1/customers/354f9c97-7018-469f-bca0-8590e24150a5 | jq
+
+< HTTP/1.1 200
+<
+{
+  "id": "354f9c97-7018-469f-bca0-8590e24150a5",
+  "name": "Martín",
+  "country": "Perú"
+}
+````
+
+````bash
+$ curl -v -X POST -G --data "name=Patricio&country=USA" http://localhost:8080/api/v1/customers | jq
+
+< HTTP/1.1 201
+< Location: /api/v1/customers/70f74ffa-dd55-41f0-a2ae-2037133fcb87
+<
+{
+  "id": "70f74ffa-dd55-41f0-a2ae-2037133fcb87",
+  "name": "Patricio",
+  "country": "USA"
+}
+````
+
+````bash
+$ curl -v -X DELETE http://localhost:8080/api/v1/customers/70f74ffa-dd55-41f0-a2ae-2037133fcb87 | jq
+
+>
+< HTTP/1.1 204
+````
+
+````bash
+$ curl -v -X POST -G --data "customerId=354f9c97-7018-469f-bca0-8590e24150a5&total=650" http://localhost:8080/api/v1/orders | jq
+
+< HTTP/1.1 201
+< Location: /api/v1/orders/4e3256ed-d0bc-4e50-afe8-d1240cc86eef
+<
+{
+  "id": "4e3256ed-d0bc-4e50-afe8-d1240cc86eef",
+  "customerId": "354f9c97-7018-469f-bca0-8590e24150a5",
+  "total": 650
+}
+````
+
