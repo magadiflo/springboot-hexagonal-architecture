@@ -4,6 +4,48 @@ Tutorial tomado del canal de **youtube NullSafe Architect**
 
 ---
 
+## Visión General
+
+A continuación se muestra de manera general, la arquitectura hexagonal que se implementará en este tutorial.
+
+**NOTA**
+
+> Hice unos cambios a la forma en la que se implementa en el video, dado que existe un principio en la arquitectura
+> hexagonal conocido como `principio de dependencia direccional`, mismo principio que se estaba violando en el
+> desarrollo del video.
+
+Este principio establece que cada capa en la arquitectura hexagonal debe conocerse a sí misma y a las capas inferiores,
+pero no a las capas superiores. Esto significa que las dependencias entre las capas deben fluir en una dirección
+específica, hacia adentro.
+
+Para entenderlo mejor, consideremos las siguientes capas en una arquitectura hexagonal:
+
+1. `Capa de Dominio (Domain)`: Esta capa contiene la lógica de negocio y las entidades del dominio. Debe ser
+   independiente de cualquier capa externa. En otras palabras, no debe tener dependencias de las capas superiores ni de
+   la infraestructura.
+
+2. `Capa de Aplicación (Application)`: Esta capa utiliza las entidades y reglas de negocio definidas en la capa de
+   dominio para implementar los casos de uso específicos de la aplicación. La capa de aplicación puede tener
+   dependencias de la capa de dominio, pero no debe depender de la capa de infraestructura.
+
+3. `Capa de Infraestructura (Infrastructure)`: Esta capa maneja los detalles de implementación y la interacción con
+   recursos externos, como bases de datos, servicios web, etc. La capa de infraestructura puede depender de la capa de
+   dominio y de la capa de aplicación, pero no debe depender de ninguna capa superior.
+
+Entonces, en términos de importaciones y dependencias:
+
+- `La capa de dominio` puede importar clases y componentes de sí misma, pero no debe importar nada de la capa de
+  aplicación
+  ni de la capa de infraestructura.
+
+- `La capa de aplicación` puede importar clases de la capa de dominio, pero no debe importar clases de la capa de
+  infraestructura.
+
+- `La capa de infraestructura` puede importar clases de la capa de dominio y de la capa de aplicación, ya que necesita
+  interactuar con ellas para realizar operaciones de infraestructura.
+
+![01.hexagonal-architecture.bmp](./assets/01.hexagonal-architecture.bmp)
+
 ## Dependencias
 
 ````xml
